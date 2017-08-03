@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	
+
+function validar(e) { // 1
+
+tecla = (document.all) ? e.keyCode : e.which; // 2
+
+if (tecla==8) return true; // 3
+
+patron =/[A-Za-z\s]/; // 4
+
+te = String.fromCharCode(tecla); // 5
+
+return patron.test(te); // 6
+
+}
+
+
+
+
+function checkRut(rut) {
+	    // Despejar Puntos
+	    var valor = rut.value.replace('.','');
+	    // Despejar Guión
+	    valor = valor.replace('-','');
+	    
+	    // Aislar Cuerpo y Dígito Verificador
+	    cuerpo = valor.slice(0,-1);
+	    dv = valor.slice(-1).toUpperCase();
+	    
+	    // Formatear RUN
+	    rut.value = cuerpo + '-'+ dv
+	    
+	    // Si no cumple con el mínimo ej. (n.nnn.nnn)
+	    if(cuerpo.length < 7) { rut.setCustomValidity("RUT Incompleto"); return false;}
+	    
+	    // Calcular Dígito Verificador
+	    suma = 0;
+	    multiplo = 2;
+	    
+	    // Para cada dígito del Cuerpo
+	    for(i=1;i<=cuerpo.length;i++) {
+	    
+	        // Obtener su Producto con el Múltiplo Correspondiente
+	        index = multiplo * valor.charAt(cuerpo.length - i);
+	        
+	        // Sumar al Contador General
+	        suma = suma + index;
+	        
+	        // Consolidar Múltiplo dentro del rango [2,7]
+	        if(multiplo < 7) { multiplo = multiplo + 1; } else { multiplo = 2; }
+	  
+	    }
+	    
+	    // Calcular Dígito Verificador en base al Módulo 11
+	    dvEsperado = 11 - (suma % 11);
+	    
+	    // Casos Especiales (0 y K)
+	    dv = (dv == 'K')?10:dv;
+	    dv = (dv == 0)?11:dv;
+	    
+	    // Validar que el Cuerpo coincide con su Dígito Verificador
+	    if(dvEsperado != dv) { rut.setCustomValidity("RUT Inválido"); return false; }
+	    
+	    // Si todo sale bien, eliminar errores (decretar que es válido)
+	    rut.setCustomValidity('');
+	}
+
+
+
+	function validarEmail(valor) {
+	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3,4})+$/.test(valor))
+	{
+		
+	}
+	else
+	{
+	  valor.setCustomValidity("Email invalido"); return false;
+	   }	  
+	   valor.setCustomValidity("");
+		
+}
+
+</script>
+
+<style>
+body {
+    background-color: yellow;
+}
+</style>
+
+
+
+</head>
+<form>
+<body >
+<div class="container"  align="center">
+<h1> Texto en h1</h1>
+<h2>Este es otro texto en h2 ¿ Se nota la diferencia?</h2>
+<div class="row">
+	<div class="col-sm-6" align="center">
+Nombre:
+</div>
+	<div class="col-sm-6"  >
+	<input type="text" name="txtNombre" oncut="return false;"
+	onpaste="return false;" onkeypress="return validar(event)" >
+</div>
+	<div class="row">
+<div class="col-sm-6">
+Apellidos:
+</div>
+<div class="col-sm-6"  >
+<input type="text" name="txtApellidos" oncut="return false;"
+	onpaste="return false;"required onkeypress="return validar(event)" >
+</div>
+<div class="row">
+<div class="col-sm-6" >
+Correo electronico:
+</div>
+<div class="col-sm-6">
+<input type="text" id="txtEmail" name="txtEmail" oncut="return false;"
+	onpaste="return false;" onkeyup="validarEmail(this)">
+</div>
+<div class="row">
+<div class="col-sm-6" >
+RUT:
+</div>
+<div class="col-sm-6">
+<input type="text" name="txtRut" oncut="return false;"
+	onpaste="return false;" oninput="checkRut(this)">
+</div>
+
+<div class="row">
+	<div class="col-sm-6" >
+	<input type="submit" name="btnEnviar" value="Enviar">
+</div>
+	<div class="col-sm-6">
+	<input type="submit" name="btnCancelar" value="Cancelar">
+</div>
+
+</div>
+
+</body>
+<form>
